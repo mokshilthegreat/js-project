@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      #imgs {
+        border: 2px solid black;
+        height: 400px;
+        width: 400px;
+      }
+      #back {
+        left: 40px;
+        position: absolute;
+        top: 450px;
+      }
+      #next {
+        left: 100px;
+        position: absolute;
+        top: 450px;
+      }
+    </style>
+  </head>
+  <body>
+    <img id="imgs" src="" alt="" />
+    <button id="back">BACK</button>
+    <button id="next">NEXT</button>
+    <script>
+      let imgs = document.querySelector("#imgs");
+      let back = document.querySelector("#back");
+      let next = document.querySelector("#next");
+
+      let arr = [
+        "https://www.shutterstock.com/shutterstock/photos/2427356853/display_1500/stock-vector-vector-of-cute-baby-panda-cartoon-sitting-in-grass-vector-illustration-2427356853.jpg",
+        "https://www.shutterstock.com/shutterstock/photos/1486467449/display_1500/stock-vector-cute-funny-cartoon-baby-panda-bear-sitting-and-smile-vector-illustratio-1486467449.jpg",
+        "https://www.shutterstock.com/shutterstock/photos/2644655981/display_1500/stock-vector-a-cheerful-cartoon-panda-sits-holding-a-large-red-heart-its-expression-is-joyful-and-the-style-is-2644655981.jpg",
+      ];
+      let index = 0;
+
+      imgs.src = arr[index];
+
+      next.addEventListener("click", () => {
+        index++;
+
+        if (index == arr.length) {
+          index = 0;
+        }
+        imgs.src = arr[index];
+      });
+      back.addEventListener("click", () => {
+        if (index == 0) {
+          index = arr.length;
+        }
+        index--;
+
+        imgs.src = arr[index];
+      });
+    </script>
+  </body>
+</html>
