@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Countdown Timer</title>
+   <style>
+      #Sec {
+      font-size: 100px ;
+      text-align: center;
+      margin-top: 50px;
+    }
+   </style>
+</head>
+<body>
+  <div id="Sec">15</div>
+
+<script>
+  let TIME = document.getElementById('Sec');
+  let count = 50;
+  TIME.innerText = count;
+
+  let id = setInterval(() => {
+    count--;
+    TIME.innerText = count;
+
+    if (count <= 0) {
+      clearInterval(id);
+    }
+  }, 5000);
+</script>
+</body>
+</html>
