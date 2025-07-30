@@ -2,401 +2,112 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Cart Drawer from Right with Confirmation</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-      integrity="sha512‑Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather App</title>
     <style>
       * {
-        box-sizing: border-box;
         margin: 0;
         padding: 0;
+        box-sizing: border-box;
       }
+
       body {
-        padding-top: 60px;
-        font-family: sans-serif;
-      }
-      nav {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        background: #fff;
+        height: 100vh;
         display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px 20px;
-        z-index: 100;
-        border-bottom: 1px solid #ddd;
-      }
-      #cart-count {
-        margin-left: 5px;
-        font-size: 0.9rem;
-      }
-      #container {
         justify-content: center;
-        padding: 20px;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-      }
-      .product-card {
-        border: 1px solid #ccc;
-        padding: 10px;
-        width: 250px;
-        text-align: center;
-      }
-      .product-card img {
-        width: 100%;
-        height: 260px;
-
-        margin-bottom: 10px;
-      }
-      .product-card button {
-        background: #007bff;
-        color: #fff;
-        border: none;
-        padding: 8px 12px;
-        cursor: pointer;
-        border-radius: 4px;
-      }
-      .product-card button:hover {
-        background: #0056b3;
-      }
-
-      /* Sliding drawer */
-      .cart-drawer {
-        position: fixed;
-        top: 0;
-        right: -320px;
-        width: 320px;
-        height: 100%;
-        background: #fff;
-        box-shadow: -2px 0 8px rgba(0, 0, 0, 0.2);
-        transition: right 0.3s ease-in-out;
-        z-index: 200;
-        padding: 20px;
-        overflow-y: auto;
-      }
-      .cart-drawer.open {
-        right: 0;
-      } /* slide-in from right */
-      .cart-drawer header {
-        display: flex;
-        justify-content: space-between;
         align-items: center;
+        background: linear-gradient(to right, #00c6ff, #0072ff);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      .weather-container {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        width: 90%;
+        max-width: 400px;
+      }
+
+      h1 {
         margin-bottom: 20px;
-      }
-      .cart-items li {
-        list-style: none;
-        margin-bottom: 15px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      .cart-items .item-title {
-        flex: 1;
-        margin-right: 10px;
-      }
-      .cart-items button {
-        background: red;
-        color: #fff;
-        border: none;
-        padding: 4px 8px;
-        cursor: pointer;
-        border-radius: 4px;
+        font-size: 26px;
+        color: #0072ff;
       }
 
-      .cart-total {
-        margin-top: 20px;
-        font-weight: bold;
-      }
-
-      /* overlay */
-      .overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.4);
-        opacity: 0;
-        visibility: hidden;
-        transition: opacity 0.3s;
-        z-index: 150;
-      }
-      .overlay.visible {
-        opacity: 1;
-        visibility: visible;
-      }
-
-      /* modal for confirm */
-      #confirm-modal {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        align-items: center;
-        justify-content: center;
-        z-index: 300;
-      }
-      #confirm-modal .modal-content {
-        background: #fff;
-        padding: 20px;
+      input[type="text"] {
+        padding: 10px;
+        width: 70%;
+        border: 1px solid #ccc;
         border-radius: 8px;
-        width: 300px;
-        text-align: center;
+        margin-bottom: 10px;
+        font-size: 16px;
       }
-      #confirm-modal .modal-content button {
-        margin: 10px 5px;
-        padding: 8px 16px;
-      }
-      #confirm-modal .yes {
-        background: #d9534f;
-        color: #fff;
+
+      button {
+        padding: 10px 16px;
+        background-color: #0072ff;
+        color: white;
         border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-left: 5px;
       }
-      #confirm-modal .no {
-        background: #ccc;
-        color: #000;
-        border: none;
+
+      button:hover {
+        background-color: #005fcc;
+      }
+
+      p {
+        margin-top: 20px;
+        font-size: 20px;
+        color: #333;
+      }
+
+      span#temp {
+        font-weight: bold;
+        color: #ff4500;
       }
     </style>
   </head>
   <body>
-    <nav>
-      <h1>PRODUCT NAME</h1>
-      <div id="cart-button">
-        <i class="fa-solid fa-cart-shopping"></i><span id="cart-count">0</span>
-      </div>
-    </nav>
-
-    <div id="container"></div>
-
-    <div id="cart-drawer" class="cart-drawer">
-      <header>
-        <h2>Your Cart</h2>
-        <button id="close-drawer">&times;</button>
-      </header>
-      <ul id="drawer-items" class="cart-items"></ul>
-      <div id="cart-total" class="cart-total">Total: ₹0.00</div>
-    </div>
-
-    <div id="overlay" class="overlay"></div>
-
-    <div id="confirm-modal">
-      <div class="modal-content">
-        <p>Do you want to remove this item?</p>
-        <button class="yes">Yes</button>
-        <button class="no">Cancel</button>
-      </div>
+    <div class="weather-container">
+      <h1>Weather App</h1>
+      <input id="text" type="text" placeholder="Enter city name" />
+      <button id="search">Search</button>
+      <p>Temp: <span id="temp">--</span> °C</p>
     </div>
 
     <script>
-      const products = [
-     
-  {
-    title: "Sony WH‑CH520",
-    price: 39.99,
-    image: "https://th.bing.com/th/id/OIP.2ucgQ_uMlnHRBzDqn4j8iAHaLF?r=0&o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3",
-    description: "On‑ear Bluetooth headphones with up to 50h battery"  // Info per Sony official spec :contentReference[oaicite:4]{index=4}
-  },
-  {
-    title: "Soundcore Life Q30",
-    price: 79.99,
-    image: "https://tse1.mm.bing.net/th/id/OIP.e3mFEvSkOyn73UlKF8d30gHaEh?r=0&rs=1&pid=ImgDetMain&o=7&rm=3",
-    description: "Hybrid ANC over‑ear with 40–60h playtime"  // Soundcore spec and review details :contentReference[oaicite:5]{index=5}
-  },
-  {
-    title: "Sony WH‑CH720N",
-    price: 99.99,
-    image: "https://th.bing.com/th/id/OIP.p7WE_DljJc5Au1o8FfIq4wHaHa?r=0&o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3",
-    description: "Affordable Sony ANC over‑ear model"
-  },
-  {
-    title: "Sony WH‑1000XM6",
-    price: 449.99,
-    image: "https://i5.walmartimages.com/asr/299643ca-e935-44c2-bb51-7f3720239a24.d9d4b755f5ddd5b7da26e5e92207ada5.jpeg",
-    description: "Sony flagship over‑ear with best‑in‑class ANC"
-  },
-  {
-    title: "Bose QuietComfort Ultra",
-    price: 429.00,
-    image: "https://th.bing.com/th/id/OIP.1vC6UZr2ewyW9WAB1jz_CwHaEo?r=0&o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3",
-    description: "Advanced ANC with immersive soundstage"
-  },
-  {
-    title: "Bowers & Wilkins PX7 S3",
-    price: 449.00,
-    image: "https://th.bing.com/th/id/OIP.p7WE_DljJc5Au1o8FfIq4wHaHa?r=0&o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3",
-    description: "Luxury over‑ear headset with hi‑fi tuning"
-  },
-  {
-    title: "Apple AirPods Max",
-    price: 529.99,
-    image: "https://th.bing.com/th/id/OIP.2ucgQ_uMlnHRBzDqn4j8iAHaLF?r=0&o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3",
-    description: "Premium AirPods with spatial audio support"
-  },
-  {
-    title: "Sonos Ace",
-    price: 299.00,
-    image: "https://i5.walmartimages.com/asr/299643ca-e935-44c2-bb51-7f3720239a24.d9d4b755f5ddd5b7da26e5e92207ada5.jpeg",
-    description: "Dolby Atmos wireless headphones"
-  },
-  {
-    title: "Sennheiser Momentum 4 Wireless",
-    price: 350.00,
-    image: "https://tse1.mm.bing.net/th/id/OIP.e3mFEvSkOyn73UlKF8d30gHaEh?r=0&rs=1&pid=ImgDetMain&o=7&rm=3",
-    description: "Natural sound and ultra comfort"
-  },
-  {
-    title: "Anker Space Q45",
-    price: 149.00,
-    image: "https://th.bing.com/th/id/OIP.1vC6UZr2ewyW9WAB1jz_CwHaEo?r=0&o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3",
-    description: "Budget ANC headphone with LDAC support"
-  },
-  {
-    title: "Soundcore Life Q35",
-    price: 119.00,
-    image: "https://th.bing.com/th/id/OIP.1vC6UZr2ewyW9WAB1jz_CwHaEo?r=0&o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3",
-    description: "Upgraded Q30 with LDAC codec"
-  },
-  {
-    title: "Sony WF‑1000XM5",
-    price: 199.00,
-    image: "https://th.bing.com/th/id/OIP.p7WE_DljJc5Au1o8FfIq4wHaHa?r=0&o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3",
-    description: "Flagship Sony true‑wireless ANC earbuds"
-  },
-  {
-    title: "Bose QuietComfort Earbuds II",
-    price: 279.00,
-    image: "https://tse1.mm.bing.net/th/id/OIP.e3mFEvSkOyn73UlKF8d30gHaEh?r=0&rs=1&pid=ImgDetMain&o=7&rm=3",
-    description: "Comfortable in‑ears with strong ANC"
-  },
-  {
-    title: "Jabra Elite 85t",
-    price: 179.00,
-    image: "https://i5.walmartimages.com/asr/299643ca-e935-44c2-bb51-7f3720239a24.d9d4b755f5ddd5b7da26e5e92207ada5.jpeg",
-    description: "Adjustable ANC and excellent call clarity"
-  },
-  {
-    title: "Technics EAH‑AZ100",
-    price: 250.00,
-    image: "https://th.bing.com/th/id/OIP.oZo7PDq7oGSGP05LBVav4gHaD8?r=0&o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3",
-    description: "Premium in‑ear ANC earbuds"
-  },
-  {
-    title: "SteelSeries Arctis Nova 5X",
-    price: 129.00,
-    image: "https://tse1.mm.bing.net/th/id/OIP.e3mFEvSkOyn73UlKF8d30gHaEh?r=0&rs=1&pid=ImgDetMain&o=7&rm=3",
-    description: "60‑h battery gaming over‑ear headset"
-  },
-  {
-    title: "1MORE SonoFlow SE",
-    price: 50.00,
-    image: "https://th.bing.com/th/id/OIP.p7WE_DljJc5Au1o8FfIq4wHaHa?r=0&o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3",
-    description: "Ultra budget ANC with long battery life"
-  },
-  {
-    title: "Cambridge Audio Melomania P100",
-    price: 79.99,
-    image: "https://th.bing.com/th/id/OIP.1vC6UZr2ewyW9WAB1jz_CwHaEo?r=0&o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3",
-    description: "Hi‑res true wireless earbuds clarity"
-  },
-  {
-    title: "Shokz OpenFit 2+",
-    price: 129.00,
-    image: "https://th.bing.com/th/id/OIP.2ucgQ_uMlnHRBzDqn4j8iAHaLF?r=0&o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3",
-    description: "Open‑ear Dolby audio ear speaker"
-  },
-  {
-    title: "Anker Soundcore Life P3",
-    price: 79.00,
-    image: "https://i5.walmartimages.com/asr/299643ca-e935-44c2-bb51-7f3720239a24.d9d4b755f5ddd5b7da26e5e92207ada5.jpeg",
-    description: "Wireless charging buds with strong bass"
-  }
-];
+      let text = document.querySelector("#text");
+      let search = document.querySelector("#search");
+      let temp = document.querySelector("#temp");
 
-   
+      async function getWeather() {
+        if (!text.value.trim()) {
+          alert("First put a state or city name");
+          return;
+        }
 
-      let cart = [],
-        removeIndex = null;
-      const container = document.getElementById("container");
-      const cartCount = document.getElementById("cart-count");
-      const drawer = document.getElementById("cart-drawer");
-      const drawerList = document.getElementById("drawer-items");
-      const totalEl = document.getElementById("cart-total");
-      const overlay = document.getElementById("overlay");
-      const closeDrawerBtn = document.getElementById("close-drawer");
-      const confirmModal = document.getElementById("confirm-modal");
-      const btnYes = confirmModal.querySelector(".yes");
-      const btnNo = confirmModal.querySelector(".no");
+        let url = `https://api.openweathermap.org/data/2.5/weather?units=metric&q=${text.value}`;
+        let apikey = "4eecb8352c8996cfc442505f14c82e9c"
 
-      function renderProducts() {
-        products.forEach((item) => {
-          const box = document.createElement("div");
-          box.className = "product-card";
-          box.innerHTML = `<img src="${item.image}" alt="${item.title}">
-                     <p>${item.title}</p>
-                     <p>₹${item.price.toFixed(2)}</p>
-                     <p>${item.description}</p>
-                     <button>Add to Cart</button>`;
-          box.querySelector("button").onclick = () => {
-            cart.push(item);
-            updateDrawer();
-            openDrawer();
-          };
-          container.append(box);
-        });
+        try {
+          let response = await fetch(url + `&appid=${apikey}`);
+          response = await response.json();
+          console.log(response);
+          temp.innerText = response.main.temp;
+        } catch (error) {
+          console.log(error);
+        }
+        text.value = "";
       }
-      function openDrawer() {
-        drawer.classList.add("open");
-        overlay.classList.add("visible");
-      }
-      function closeDrawer() {
-        drawer.classList.remove("open");
-        overlay.classList.remove("visible");
-      }
-      function updateDrawer() {
-        drawerList.innerHTML = "";
-        let total = 0;
-        cart.forEach((it, idx) => {
-          const li = document.createElement("li");
-          li.innerHTML = `<span class="item-title">${it.title}</span>
-                    <span>₹${it.price.toFixed(2)}</span>
-                    <button data-index="${idx}">Remove</button>`;
-          li.querySelector("button").onclick = () => {
-            removeIndex = idx;
-            confirmModal.style.display = "flex";
-          };
-          drawerList.append(li);
-          total += it.price;
-        });
-        cartCount.textContent = cart.length;
-        totalEl.textContent = `Total: ₹${total.toFixed(2)}`;
-      }
-      btnNo.onclick = () => {
-        confirmModal.style.display = "none";
-        removeIndex = null;
-      };
-      btnYes.onclick = () => {
-        if (removeIndex !== null) cart.splice(removeIndex, 1);
-        confirmModal.style.display = "none";
-        removeIndex = null;
-        updateDrawer();
-      };
-      closeDrawerBtn.onclick = closeDrawer;
-      overlay.onclick = closeDrawer;
 
-      renderProducts();
+      search.addEventListener("click", getWeather);
+
+      getWeather();
     </script>
   </body>
 </html>
