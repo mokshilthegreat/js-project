@@ -1,0 +1,123 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Corona API</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .corona-container {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      font-size: 26px;
+      color: #0072ff;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      width: 70%;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 10px 16px;
+      background-color: #0072ff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-left: 5px;
+    }
+
+    button:hover {
+      background-color: #005fcc;
+    }
+
+    .data {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #333;
+    }
+
+    .data span {
+      display: block;
+      margin-top: 5px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="corona-container">
+    <h1>CORONA API</h1>
+    <input id="country" type="text" placeholder="Enter country name" />
+    <button id="search">Search</button>
+    <div class="data">
+      <span id="cases">Cases: --</span>
+      <span id="deaths">Deaths: --</span>
+    </div>
+  </div>
+
+  <script>
+    const input = document.getElementById("country");
+    const search = document.getElementById("search");
+
+    const cases = document.getElementById("cases");
+    const deaths = document.getElementById("deaths");
+
+    async function getCovidData() {
+      if (!input.value.trim()) {
+        alert("Please enter a country name.");
+        return;
+      }
+
+      const url = `https://disease.sh/v3/covid-19/countries/${input.value.trim()}`;
+
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error("Country not found");
+        }
+        const data = await response.json();
+        console.log(data);
+
+        cases.innerText = `Cases: ${data.cases.toLocaleString()}`;
+        deaths.innerText = `Deaths: ${data.deaths.toLocaleString()}`;
+      } catch (error) {
+        alert("Error: " + error.message);
+      }
+
+      input.value = "";
+    }
+
+    search.addEventListener("click", getCovidData);
+  </script>
+</body>
+</html>
