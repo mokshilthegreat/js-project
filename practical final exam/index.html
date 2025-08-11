@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Exam</title>
+  <style>
+    body { font-family: Arial; background: #fafafa; padding: 20px; }
+    input, button { padding: 6px; margin: 4px; }
+    .card { border: 1px solid #ccc; padding: 8px; margin: 6px 0; }
+  </style>
+</head>
+<body>
+  <h1>Exam</h1>
+
+  <form id="f">
+    <input type="hidden" id="id">
+    <input id="ti" placeholder="Title">
+    <input id="pr" placeholder="Price">
+    <input id="im" placeholder="Image URL">
+    <input id="ca" placeholder="Category">
+    <button type="submit">Save</button>
+    <button type="button" id="cl">Clear</button>
+  </form>
+
+  <div id="list"></div>
+
+  <script>
+    var arr = [];
+    function show() {
+      document.getElementById('list').innerHTML = '';
+      for (var i = 0; i < arr.length; i++) {
+        var p = arr[i];
+        var d = document.createElement('div');
+        d.className = 'card';
+        d.innerHTML = p.title + ' - ' + p.price +
+          '<button onclick="ed(' + i + ')">Edit</button>' +
+          '<button onclick="dl(' + i + ')">Del</button>';
+        document.getElementById('list').appendChild(d);
+      }
+    }
+    document.getElementById('f').onsubmit = function(e) {
+      e.preventDefault();
+      var title = document.getElementById('ti').value;
+      var price = document.getElementById('pr').value;
+      var image = document.getElementById('im').value;
+      var cat = document.getElementById('ca').value;
+      var id = document.getElementById('id').value;
+      var obj = { title: title, price: price, image: image, category: cat };
+      if (id !== '') { arr[id] = obj; } else { arr.push(obj); }
+      document.getElementById('f').reset();
+      document.getElementById('id').value = '';
+      show();
+    }
+    function ed(i) {
+      var p = arr[i];
+      document.getElementById('ti').value = p.title;
+      document.getElementById('pr').value = p.price;
+      document.getElementById('im').value = p.image;
+      document.getElementById('ca').value = p.category;
+      document.getElementById('id').value = i;
+    }
+    function dl(i) {
+      arr.splice(i, 1); show();
+    }
+    document.getElementById('cl').onclick = function() { document.getElementById('f').reset(); }
+  </script>
+</body>
+</html>
